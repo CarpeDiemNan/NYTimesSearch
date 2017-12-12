@@ -30,7 +30,27 @@ var articleCounter = 0;
 function runQuery(numArticles, queryURL){
 	$.ajax({url: queryURL, method: "GET"})
 		.done(function(NYTData) {
-			console.log(NYTData);
+			// clear the wells from the previous run
+			$("#wellSection").empty();
+			for(var i = 0; i < NYTData.response.docs.length; i++){
+			console.log(NYTData.response.docs[i].headline.main);
+			// console.log(NYTData);
+
+			// start dynamically dumping to html
+			var wellSection = $('<div>');
+			wellSection.addClass("well");
+			wellSection.attr('id', 'articleWell-' + i);
+			$("#wellSection").append(wellSection);
+			// attach content to appropriate well
+			$("#articleWell-" + i).append(NYTData.response.docs[i].headline.main)
+			$("#articleWell-" + i).append(NYTData.response.docs[i].pub_date);
+			$("#articleWell-" + i).append(NYTData.response.docs[i].section_name);
+			$("#articleWell-" + i).append(NYTData.response.docs[i].web_url);
+			
+			
+
+
+		}
 		})
 }
  
@@ -52,7 +72,7 @@ $("#searchBtn").on("click",function(){
 	var newURL = queryURLBase + "&q=" + queryTerm;
 	console.log(newURL);
 	numResults = $("#numRecords").val();
-	console.log("number of records to get: " + numResults);
+	// console.log("number of records to get: " + numResults);
 
 	// get start year and end year
 	startYear = $("#startYear").val().trim();
@@ -69,6 +89,7 @@ $("#searchBtn").on("click",function(){
 		newURL = newURL + "&end_date=" + endYear;
 	}
 	// newURL = newURL + "&begin_date=" + startYear + "&end_date=" + endYear;
+	console.log("the current URL is: " + newURL);
 	runQuery(10, newURL);
 
 	return false;
